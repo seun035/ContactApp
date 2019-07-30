@@ -12,12 +12,12 @@ import com.liadi.oluwaseun.contactapp.models.Contact;
 @Database(entities = {Contact.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
-    private AppDatabase dbInstance;
+    private static AppDatabase dbInstance;
     public abstract ContactDao contactDao();
 
-    public synchronized AppDatabase getDatabaseInstance(Context contxet) {
+    public static synchronized AppDatabase getDatabaseInstance(Context context) {
         if (dbInstance == null) {
-            dbInstance = Room.databaseBuilder(contxet.getApplicationContext(),AppDatabase.class,"contact.db").build();
+            dbInstance = Room.databaseBuilder(context.getApplicationContext(),AppDatabase.class,"contact.db").build();
         }
         return dbInstance;
     }
