@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.liadi.oluwaseun.contactapp.adapter.ContactAdapter;
 import com.liadi.oluwaseun.contactapp.models.Contact;
 import com.liadi.oluwaseun.contactapp.viewmodel.ContactViewModel;
 
@@ -14,6 +15,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.View;
@@ -22,11 +25,13 @@ import android.view.MenuItem;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainDialogFragment.DialogListener {
 
     private FragmentManager fm;
     private ContactViewModel mContactViewModel;
     private static final String TAG = "MainActivity";
+    private RecyclerView mRecyclerView;
+    private ContactAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +40,22 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mContactViewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
+        mRecyclerView = findViewById(R.id.contact_recycler);
+        mAdapter =  new ContactAdapter(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mAdapter);
+
         fm = getSupportFragmentManager();
         mContactViewModel.getAllContact().observe(this, new Observer<List<Contact>>() {
             @Override
             public void onChanged(List<Contact> contacts) {
-                if (contacts != null) {
-                    for (Contact contact : contacts) {
-                        Log.i(TAG, "onChanged: "+ contact.getName());
-                    }
-                }
+//                if (contacts != null) {
+//                    for (Contact contact : contacts) {
+//                        Log.i(TAG, "onChanged: "+ contact.getName());
+//                    }
+//                }
+                mAdapter.setContact(contacts);
+                mAdapter.notifyDataSetChanged();
             }
         });
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -76,5 +88,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, String name, String phone, String email) {
+        mContactViewModel.insertContact(new Contact(0,name,phone,email));
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
     }
 }

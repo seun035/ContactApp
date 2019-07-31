@@ -1,6 +1,7 @@
 package com.liadi.oluwaseun.contactapp;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +20,20 @@ public class MainDialogFragment extends DialogFragment {
     private TextInputEditText mPhoneInput;
     private TextInputEditText mEmailInput;
 
+    public interface DialogListener {
+        public void onDialogPositiveClick(DialogFragment dialog, String name, String phone, String email);
+        public void onDialogNegativeClick(DialogFragment dialog);
+    }
+
+    private DialogListener mDialogListener;
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mDialogListener = (DialogListener) context;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -30,7 +45,13 @@ public class MainDialogFragment extends DialogFragment {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext())
                 .setTitle("Add Contact")
                 .setView(view)
-                .setPositiveButton("Add",null)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mDialogListener.onDialogPositiveClick(MainDialogFragment.this,
+                                mNameInput.getText().toString(),mPhoneInput.getText().toString(), mEmailInput.getText().toString());
+                    }
+                })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
