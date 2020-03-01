@@ -25,4 +25,7 @@ public interface ContactDao {
 
     @Query("Select * from contacts")
     LiveData<List<Contact>> getAllContact();
+
+    @Query("Select * from contacts where id = :contact_id")
+    Contact getContact(int contact_id);
 }

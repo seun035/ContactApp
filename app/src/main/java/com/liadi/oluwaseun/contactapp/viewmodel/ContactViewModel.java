@@ -43,4 +43,8 @@ public class ContactViewModel extends AndroidViewModel {
     public void deleteContact(Contact contact) {
         mContactRepository.deleteContact(contact);
     }
+
+    public Contact getContact(int contact_id) {
+        return mContactRepository.getContact(contact_id);
+    }
 }

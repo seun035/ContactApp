@@ -54,4 +54,8 @@ public class ContactRepository {
     public LiveData<List<Contact>> getAllContact() {
         return mAppDatabase.contactDao().getAllContact();
     }
+
+    public Contact getContact(int contact_id) {
+        return mAppDatabase.contactDao().getContact(contact_id);
+    }
 }

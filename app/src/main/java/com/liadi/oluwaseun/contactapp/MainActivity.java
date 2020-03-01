@@ -49,11 +49,7 @@ public class MainActivity extends AppCompatActivity implements MainDialogFragmen
         mContactViewModel.getAllContact().observe(this, new Observer<List<Contact>>() {
             @Override
             public void onChanged(List<Contact> contacts) {
-//                if (contacts != null) {
-//                    for (Contact contact : contacts) {
-//                        Log.i(TAG, "onChanged: "+ contact.getName());
-//                    }
-//                }
+
                 mAdapter.setContact(contacts);
                 mAdapter.notifyDataSetChanged();
             }
@@ -62,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements MainDialogFragmen
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment dialog = new MainDialogFragment();
+                DialogFragment dialog = (MainDialogFragment)MainDialogFragment.newInstance(null);
                 dialog.show(fm , "main-dialog");
             }
         });
@@ -91,12 +87,24 @@ public class MainActivity extends AppCompatActivity implements MainDialogFragmen
     }
 
     @Override
-    public void onDialogPositiveClick(DialogFragment dialog, String name, String phone, String email) {
+    public void onDialogPositiveAddClick(DialogFragment dialog, String name, String phone, String email) {
         mContactViewModel.insertContact(new Contact(0,name,phone,email));
+    }
+
+    @Override
+    public void onDialogPositiveUpdateClick(DialogFragment dialog, Contact contact) {
+        mContactViewModel.updateContact(contact);
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
 
+    }
+
+    @Override
+    public void showDialog(Contact contact) {
+
+        DialogFragment dialog = (MainDialogFragment)MainDialogFragment.newInstance(contact);
+        dialog.show(fm , "main-dialog");
     }
 }
